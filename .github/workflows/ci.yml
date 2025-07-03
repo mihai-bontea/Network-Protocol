@@ -1,0 +1,65 @@
+name: C++ CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        compiler:
+          - g++
+          - clang++
+
+    env:
+      BUILD_DIR: build
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake libgtest-dev ninja-build clang-tidy
+
+    - name: Set compiler
+      run: |
+        if [ "${{ matrix.compiler }}" = "clang++" ]; then
+          echo "CXX=clang++" >> $GITHUB_ENV
+          echo "CC=clang" >> $GITHUB_ENV
+        else
+          echo "CXX=g++" >> $GITHUB_ENV
+          echo "CC=gcc" >> $GITHUB_ENV
+        fi
+
+    - name: Configure CMake
+      run: |
+        cmake -S . -B $BUILD_DIR \
+          -DCMAKE_CXX_COMPILER=${{ env.CXX }} \
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+          -G Ninja
+
+    - name: Run clang-tidy
+      run: |
+        clang-tidy \
+          src/*.cpp \
+          -- -Iinclude || true
+
+    - name: Build
+      run: cmake --build $BUILD_DIR --parallel
+
+    - name: Run tests
+      run: ctest --test-dir $BUILD_DIR --output-on-failure
+
+    - name: Upload binaries
+      uses: actions/upload-artifact@v4
+      with:
+        name: myproto-binaries-${{ matrix.compiler }}
+        path: ${{ env.BUILD_DIR }}/
