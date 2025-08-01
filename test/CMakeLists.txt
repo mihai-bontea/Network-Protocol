@@ -1,5 +1,6 @@
 add_executable(MyTests
         main_test.cpp
+        TcpHeaderTests.cpp
 )
 
 target_link_libraries(MyTests
