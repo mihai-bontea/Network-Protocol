@@ -29,6 +29,11 @@ public:
         write16(buffer + 16, checksum);
         write16(buffer + 18, urgent_pointer);
     }
+
+    void deserialize(const uint8_t* buffer)
+    {
+
+    }
 private:
     static void write16(uint8_t* buffer, uint16_t value)
     {
