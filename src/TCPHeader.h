@@ -32,7 +32,19 @@ public:
 
     void deserialize(const uint8_t* buffer)
     {
+        source_port = (buffer[0] << 8) | buffer[1];
+        destination_port = (buffer[2] << 8) | buffer[3];
+        sequence_number = (buffer[4] << 24) | (buffer[5] << 16) | (buffer[6] << 8) | buffer[7];
+        acknowledgment_number = (buffer[8] << 24) | (buffer[9] << 16) | (buffer[10] << 8) | buffer[11];
 
+        uint8_t offset_reserved = buffer[12];
+        data_offset = offset_reserved >> 4;
+        reserved = (offset_reserved >> 1) & 0x07;
+
+        flags = buffer[13];
+        window_size = (buffer[14] << 8) | buffer[15];
+        checksum = (buffer[16] << 8) | buffer[17];
+        urgent_pointer = (buffer[18] << 8) | buffer[19];
     }
 private:
     static void write16(uint8_t* buffer, uint16_t value)
