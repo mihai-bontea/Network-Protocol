@@ -37,8 +37,7 @@ public:
             throw std::runtime_error("TCP Header must be at least 20 bytes");
         }
 
-        // TODO
-        // header.deserialize(buffer)
+        header.deserialize(buffer);
 
         size_t header_length = header.data_offset * 4;
         if (length < header_length)
