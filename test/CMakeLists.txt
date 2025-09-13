@@ -1,5 +1,4 @@
 add_executable(MyTests
-        main_test.cpp
         TcpHeaderTests.cpp
         TcpSegmentTests.cpp
 )
