@@ -12,6 +12,12 @@ public:
     uint8_t reserved;
     uint16_t flags;
 
+    enum Flag {
+        SYN = 0x02,
+        ACK = 0x10,
+        FIN = 0x01
+    };
+
     uint16_t window_size, checksum, urgent_pointer;
 
     void serialize(uint8_t* buffer) const

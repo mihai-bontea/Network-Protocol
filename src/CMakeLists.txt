@@ -1,5 +1,5 @@
 add_library(NetworkProtocolLib
-        protocol.cpp
+        main.cpp
 )
 
 target_include_directories(NetworkProtocolLib PUBLIC
